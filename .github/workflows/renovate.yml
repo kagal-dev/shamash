@@ -1,0 +1,26 @@
+name: renovate-config-validator
+
+permissions:
+  contents: read
+
+on:
+  push:
+    paths:
+      - 'renovate.json'
+  pull_request:
+    paths:
+      - 'renovate.json'
+
+jobs:
+  renovate-config-validator:
+    runs-on: depot-ubuntu-latest
+    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository)
+
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-node@v7
+      with:
+        node-version: '24'
+
+    - name: Run renovate-config-validator
+      run: npx --yes --package renovate -- renovate-config-validator --strict
